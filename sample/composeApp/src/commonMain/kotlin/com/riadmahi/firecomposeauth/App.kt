@@ -12,11 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import firecomposeauth.sample.composeapp.generated.resources.Res
+import firecomposeauth.sample.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-import firecomposeauth.composeapp.generated.resources.Res
-import firecomposeauth.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 @Preview

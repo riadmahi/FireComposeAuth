@@ -32,4 +32,5 @@ plugins {
 }
 
 include(":sample:composeApp")
+include(":sample:iosApp")
 include(":firecomposeauth")

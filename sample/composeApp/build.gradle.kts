@@ -91,11 +91,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.riadmahi.composeApp.MainKt"
+        mainClass = "com.riadmahi.firecomposeauth.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.riadmahi.composeApp"
+            packageName = "com.riadmahi.firecomposeauth"
             packageVersion = "1.0.0"
         }
     }
