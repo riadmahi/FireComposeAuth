@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.cocoapods)
 }
 
 kotlin {
@@ -25,6 +26,23 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
+            isStatic = true
+        }
+    }
+
+    cocoapods {
+        version = "1.0.0"
+        summary = "FireComposeAuth: Firebase Auth for Compose Multiplatform"
+        homepage = "https://github.com/riadmahi/FireComposeAuth"
+        ios.deploymentTarget = "15.0"
+        pod("FirebaseAuth") {
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+        pod("FirebaseCore") {
+            extraOpts += listOf("-compiler-option", "-fmodules")
+        }
+        framework {
+            baseName = "FireComposeAuth"
             isStatic = true
         }
     }
