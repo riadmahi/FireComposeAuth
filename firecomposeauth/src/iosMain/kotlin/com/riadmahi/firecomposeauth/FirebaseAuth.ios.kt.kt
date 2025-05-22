@@ -53,3 +53,6 @@ class IOSFirebaseAuth : FireComposeAuth {
         return user?.let { AuthUser(it.uid(), it.email()) }
     }
 }
+
+actual val fireComposeAuth: FireComposeAuth
+    get() = IOSFirebaseAuth()

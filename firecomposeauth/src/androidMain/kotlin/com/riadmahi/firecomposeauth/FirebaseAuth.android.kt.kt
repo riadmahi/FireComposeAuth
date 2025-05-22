@@ -4,7 +4,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-class AndroidFirebaseAuth : FireComposeAuth {
+class AndroidFirebaseAuth: FireComposeAuth {
     private val auth = Firebase.auth
 
     override suspend fun login(email: String, password: String): AuthResult = try {
@@ -30,3 +30,6 @@ class AndroidFirebaseAuth : FireComposeAuth {
         return user?.let { AuthUser(it.uid, it.email) }
     }
 }
+
+actual val fireComposeAuth: FireComposeAuth
+    get() = AndroidFirebaseAuth()

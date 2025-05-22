@@ -6,3 +6,5 @@ interface FireComposeAuth {
     suspend fun logout()
     fun currentUser(): AuthUser?
 }
+
+expect val fireComposeAuth : FireComposeAuth
