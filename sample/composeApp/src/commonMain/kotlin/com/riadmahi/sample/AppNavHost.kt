@@ -10,6 +10,8 @@ import androidx.navigation.compose.composable
 import com.riadmahi.firecomposeauth.FireComposeAuth
 import com.riadmahi.sample.forgotpassword.ForgotPasswordScreen
 import com.riadmahi.sample.forgotpassword.ForgotPasswordViewModel
+import com.riadmahi.sample.home.HomeScreen
+import com.riadmahi.sample.home.HomeViewModel
 import com.riadmahi.sample.login.LoginScreen
 import com.riadmahi.sample.login.LoginViewModel
 import com.riadmahi.sample.register.RegisterScreen
@@ -69,6 +71,17 @@ fun AppNavHost(
             )
         }
 
+        composable(route = AppDestination.Home.route) {
+            val viewModel = remember { HomeViewModel(auth) }
+            HomeScreen(
+                viewModel = viewModel,
+                onSignedOut = {
+                    navController.navigate(AppDestination.Login.route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
     }
 }
 
