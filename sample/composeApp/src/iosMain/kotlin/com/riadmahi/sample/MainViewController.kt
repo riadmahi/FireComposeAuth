@@ -1,4 +1,4 @@
-package com.riadmahi.firecomposeauth
+package com.riadmahi.sample
 
 import androidx.compose.ui.window.ComposeUIViewController
 

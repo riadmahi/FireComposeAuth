@@ -1,4 +1,4 @@
-package com.riadmahi.firecomposeauth
+package com.riadmahi.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
