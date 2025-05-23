@@ -77,6 +77,7 @@ implementation(project(":firecomposeauth"))
 | `signInWithApple(idToken)`               | Sign in with Apple                     | `fireComposeAuth.signInWithApple(idToken)`                     |
 | `logout()`                               | Sign out user                          | `fireComposeAuth.logout()`                                     |
 | `currentUser()`                          | Returns current user info if logged in | `fireComposeAuth.currentUser()`                                |
+| `updatePassword(newPassword)`           | Updates the user's password            | `fireComposeAuth.updatePassword("newStrongPassword123")`       |
 
 ---
 
@@ -138,6 +139,22 @@ Then pass these tokens to your shared KMP auth module.
 ---
 
 ## Learn more
+
+---
+
+## 🔢 Firebase Auth Error Codes
+
+| Code   | Constant                              | Description                          |
+|--------|---------------------------------------|--------------------------------------|
+| 17008  | `ERROR_INVALID_EMAIL`                | The email address is badly formatted |
+| 17009  | `ERROR_WRONG_PASSWORD`               | Incorrect password                   |
+| 17011  | `ERROR_USER_NOT_FOUND`               | No user found with this identifier   |
+| 17010  | `ERROR_TOO_MANY_REQUESTS`            | Request blocked due to unusual activity |
+| 17007  | `ERROR_EMAIL_ALREADY_IN_USE`         | Email already in use                 |
+| 17026  | `ERROR_WEAK_PASSWORD`                | Password is not strong enough        |
+| other  | `UNKNOWN`                            | Unrecognized error code              |
+
+You can access these constants via `FirebaseAuthErrorCodes` from your shared codebase.
 
 - [Kotlin Multiplatform](https://kotlinlang.org/lp/multiplatform/)
 - [Firebase Authentication](https://firebase.google.com/docs/auth)
