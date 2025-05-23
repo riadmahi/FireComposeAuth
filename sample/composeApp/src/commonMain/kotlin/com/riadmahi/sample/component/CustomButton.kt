@@ -56,9 +56,9 @@ fun CustomGhostButton(
     Button(
         modifier = modifier.defaultMinSize(minHeight = minHeight),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFEAE5D8)
+            containerColor = Color(0xFFF1E2F3)
         ),
-        border = BorderStroke(1.dp, Color(0xFFA08F63) ),
+        border = BorderStroke(1.dp, Color(0xFFBE78C9) ),
         onClick = { onClick() },
         shape = RoundedCornerShape(12.dp),
         elevation = ButtonDefaults.buttonElevation(0.dp)
@@ -68,7 +68,7 @@ fun CustomGhostButton(
             fontSize = fontSize,
             fontWeight = FontWeight.Medium,
             lineHeight = fontSize,
-            color = Color(0xFF171F23)
+            color = Color.Black
         )
     }
 }
