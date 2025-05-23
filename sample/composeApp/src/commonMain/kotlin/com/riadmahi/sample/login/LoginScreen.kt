@@ -86,7 +86,7 @@ fun LoginScreen(
                         value = email,
                         onValueChange = { email = it },
                         placeholder = { Text(text = "Email") },
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.fillMaxWidth(),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color(0xFFF1E2F3),
