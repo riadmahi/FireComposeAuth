@@ -4,7 +4,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
-class AndroidFirebaseAuth(private val context: Any?): FireComposeAuth {
+class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
     private val auth: FirebaseAuth
 
     init {
@@ -17,8 +17,8 @@ class AndroidFirebaseAuth(private val context: Any?): FireComposeAuth {
 
     override suspend fun login(email: String, password: String): AuthResult {
         return try {
-            val result = auth.signInWithEmailAndPassword(email, password).await()
-            AuthResult.Success(AuthUser(result.user!!.uid, result.user!!.email))
+            auth.signInWithEmailAndPassword(email, password).await()
+            AuthResult.Success
         } catch (e: Exception) {
             AuthResult.Error(e.message ?: "Unknown error")
         }
@@ -26,8 +26,8 @@ class AndroidFirebaseAuth(private val context: Any?): FireComposeAuth {
 
     override suspend fun register(email: String, password: String): AuthResult {
         return try {
-            val result = auth.createUserWithEmailAndPassword(email, password).await()
-            AuthResult.Success(AuthUser(result.user!!.uid, result.user!!.email))
+            auth.createUserWithEmailAndPassword(email, password).await()
+            AuthResult.Success
         } catch (e: Exception) {
             AuthResult.Error(e.message ?: "Unknown error")
         }
@@ -40,6 +40,15 @@ class AndroidFirebaseAuth(private val context: Any?): FireComposeAuth {
     override fun currentUser(): AuthUser? {
         val user = auth.currentUser
         return user?.let { AuthUser(it.uid, it.email) }
+    }
+
+    override suspend fun sendPasswordResetEmail(email: String): AuthResult {
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            AuthResult.Success
+        } catch (e: Exception) {
+            AuthResult.Error(e.message ?: "Unknown error")
+        }
     }
 }
 

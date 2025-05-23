@@ -25,14 +25,18 @@ class IOSFirebaseAuth : FireComposeAuth {
     override suspend fun login(email: String, password: String): AuthResult =
         suspendCancellableCoroutine { cont ->
             try {
-                auth.signInWithEmail(email = email, password = password, completion = { result: FIRAuthDataResult?, error: NSError? ->
-                    if (error != null) {
-                        cont.resume(AuthResult.Error(error.localizedDescription ?: "Unknown"))
-                    } else {
-                        val user = result?.user()
-                        cont.resume(AuthResult.Success(AuthUser(user?.uid() ?: "", user?.email())))
-                    }
-                })
+                auth.signInWithEmail(
+                    email = email,
+                    password = password,
+                    completion = { _: FIRAuthDataResult?, error: NSError? ->
+                        if (error != null) {
+                            cont.resume(AuthResult.Error(error.localizedDescription ?: "Unknown"))
+                        } else {
+                            cont.resume(
+                                AuthResult.Success
+                            )
+                        }
+                    })
             } catch (e: Throwable) {
                 cont.resume(AuthResult.Error(e.message ?: "Unknown error"))
             }
@@ -41,12 +45,11 @@ class IOSFirebaseAuth : FireComposeAuth {
     override suspend fun register(email: String, password: String): AuthResult =
         suspendCancellableCoroutine { cont ->
             try {
-                auth!!.createUserWithEmail(email, password) { result, error ->
+                auth.createUserWithEmail(email, password) { result, error ->
                     if (error != null) {
                         cont.resume(AuthResult.Error(error.localizedDescription))
                     } else {
-                        val user = result?.user()
-                        cont.resume(AuthResult.Success(AuthUser(user?.uid() ?: "", user?.email())))
+                        cont.resume(AuthResult.Success)
                     }
                 }
             } catch (e: Throwable) {
@@ -58,7 +61,7 @@ class IOSFirebaseAuth : FireComposeAuth {
         try {
             memScoped {
                 val errorPtr = alloc<ObjCObjectVar<NSError?>>()
-                val success = auth!!.signOut(errorPtr.ptr)
+                val success = auth.signOut(errorPtr.ptr)
                 if (!success) {
                     val error = errorPtr.value
                     AuthResult.Error(error?.localizedDescription ?: "Unknown sign out error")
@@ -70,9 +73,20 @@ class IOSFirebaseAuth : FireComposeAuth {
     }
 
     override fun currentUser(): AuthUser? {
-        val user = auth!!.currentUser()
+        val user = auth.currentUser()
         return user?.let { AuthUser(it.uid(), it.email()) }
     }
+
+    override suspend fun sendPasswordResetEmail(email: String): AuthResult =
+        suspendCancellableCoroutine { cont ->
+            auth.sendPasswordResetWithEmail(email) { error ->
+                if (error != null) {
+                    cont.resume(AuthResult.Error(error.localizedDescription))
+                } else {
+                    cont.resume(AuthResult.Success)
+                }
+            }
+        }
 }
 
 actual fun getFireComposeAuth(context: Any?): FireComposeAuth = IOSFirebaseAuth()
