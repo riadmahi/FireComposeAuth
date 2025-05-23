@@ -30,7 +30,7 @@ class IOSFirebaseAuth : FireComposeAuth {
                     password = password,
                     completion = { _: FIRAuthDataResult?, error: NSError? ->
                         if (error != null) {
-                            cont.resume(AuthResult.Error(error.localizedDescription ?: "Unknown"))
+                            cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt()))
                         } else {
                             cont.resume(
                                 AuthResult.Success
@@ -38,7 +38,7 @@ class IOSFirebaseAuth : FireComposeAuth {
                         }
                     })
             } catch (e: Throwable) {
-                cont.resume(AuthResult.Error(e.message ?: "Unknown error"))
+                cont.resume(AuthResult.Error(e.message))
             }
         }
 
@@ -47,13 +47,13 @@ class IOSFirebaseAuth : FireComposeAuth {
             try {
                 auth.createUserWithEmail(email, password) { result, error ->
                     if (error != null) {
-                        cont.resume(AuthResult.Error(error.localizedDescription))
+                        cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt()))
                     } else {
                         cont.resume(AuthResult.Success)
                     }
                 }
             } catch (e: Throwable) {
-                cont.resume(AuthResult.Error(e.message ?: "Unknown error"))
+                cont.resume(AuthResult.Error(e.message))
             }
         }
 
@@ -64,11 +64,12 @@ class IOSFirebaseAuth : FireComposeAuth {
                 val success = auth.signOut(errorPtr.ptr)
                 if (!success) {
                     val error = errorPtr.value
-                    AuthResult.Error(error?.localizedDescription ?: "Unknown sign out error")
+                    AuthResult.Error(error?.localizedDescription)
                 }
             }
-        } catch (e: Throwable) {
-            AuthResult.Error(e.message ?: "Unknown error")
+        }
+        catch (e: Throwable) {
+            AuthResult.Error(e.message)
         }
     }
 
@@ -81,7 +82,7 @@ class IOSFirebaseAuth : FireComposeAuth {
         suspendCancellableCoroutine { cont ->
             auth.sendPasswordResetWithEmail(email) { error ->
                 if (error != null) {
-                    cont.resume(AuthResult.Error(error.localizedDescription))
+                    cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt()))
                 } else {
                     cont.resume(AuthResult.Success)
                 }

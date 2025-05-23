@@ -2,6 +2,7 @@ package com.riadmahi.firecomposeauth
 
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.tasks.await
 
 class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
@@ -19,8 +20,10 @@ class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
         return try {
             auth.signInWithEmailAndPassword(email, password).await()
             AuthResult.Success
+        } catch (e: FirebaseAuthException) {
+            AuthResult.Error(e.message, e.errorCode.toInt())
         } catch (e: Exception) {
-            AuthResult.Error(e.message ?: "Unknown error")
+            AuthResult.Error(e.message)
         }
     }
 
@@ -28,8 +31,11 @@ class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
             AuthResult.Success
-        } catch (e: Exception) {
-            AuthResult.Error(e.message ?: "Unknown error")
+        } catch (e: FirebaseAuthException) {
+            AuthResult.Error(e.message, e.errorCode.toInt())
+        }
+        catch (e: Exception) {
+            AuthResult.Error(e.message)
         }
     }
 
@@ -46,8 +52,10 @@ class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
         return try {
             auth.sendPasswordResetEmail(email).await()
             AuthResult.Success
+        } catch (e: FirebaseAuthException) {
+            AuthResult.Error(e.message, e.errorCode.toInt())
         } catch (e: Exception) {
-            AuthResult.Error(e.message ?: "Unknown error")
+            AuthResult.Error(e.message)
         }
     }
 }
