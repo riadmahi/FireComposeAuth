@@ -24,7 +24,7 @@ class LoginViewModel(
             if (result is AuthResult.Success) {
                 _uiState.value = LoginUiState.Success
             } else {
-                _uiState.value = LoginUiState.Error((result as AuthResult.Error).message)
+                _uiState.value = LoginUiState.Error((result as AuthResult.Error).message ?: "Unknown error")
             }
         }
     }

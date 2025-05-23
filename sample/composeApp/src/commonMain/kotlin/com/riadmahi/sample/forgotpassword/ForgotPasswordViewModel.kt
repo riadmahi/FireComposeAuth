@@ -25,7 +25,7 @@ class ForgotPasswordViewModel(private val auth: FireComposeAuth) : ViewModel() {
             _uiState.value = ForgotPasswordUiState.Loading
             val result = auth.sendPasswordResetEmail(email.trim())
             if (result is AuthResult.Error) {
-                _uiState.value = ForgotPasswordUiState.Error(result.message)
+                _uiState.value = ForgotPasswordUiState.Error(result.message ?: "Unknown error")
             } else {
                 _uiState.value = ForgotPasswordUiState.Success
                 startCountdown()
