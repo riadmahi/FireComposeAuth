@@ -32,16 +32,16 @@ fun PasswordTextField(password: String, onPasswordChange: (String) -> Unit) {
     TextField(
         value = password,
         onValueChange = onPasswordChange,
-        placeholder = { Text(text = "Mot de passe") },
-        shape = RoundedCornerShape(12.dp),
+        placeholder = { Text(text = "Password") },
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth(),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFFEAE5D8),
-            unfocusedContainerColor = Color(0xFFEAE5D8),
+            focusedContainerColor = Color(0xFFF1E2F3),
+            unfocusedContainerColor = Color(0xFFF1E2F3),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            focusedPlaceholderColor = Color(0xFFA08F63),
+            focusedPlaceholderColor = Color(0xFFBBA8BE),
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done,
@@ -56,7 +56,7 @@ fun PasswordTextField(password: String, onPasswordChange: (String) -> Unit) {
                     painter = painterResource(
                         if (passwordVisible) Res.drawable.ic_eye_slash else Res.drawable.ic_eye
                     ),
-                    contentDescription = if (passwordVisible) "Masquer le mot de passe" else "Afficher le mot de passe",
+                    contentDescription = if (passwordVisible) "Hide password" else "Show password",
                     modifier = Modifier.size(24.dp)
                 )
             }

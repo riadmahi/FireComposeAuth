@@ -65,7 +65,8 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = paddingValues.calculateTopPadding()),
+                .padding(horizontal = 16.dp, vertical = 32.dp)
+                .padding(top = 64.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -88,11 +89,11 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth(),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFEAE5D8),
-                            unfocusedContainerColor = Color(0xFFEAE5D8),
+                            focusedContainerColor = Color(0xFFF1E2F3),
+                            unfocusedContainerColor = Color(0xFFF1E2F3),
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
-                            focusedPlaceholderColor = Color(0xFFA08F63),
+                            focusedPlaceholderColor = Color(0xFFBBA8BE),
                         ),
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
@@ -110,7 +111,7 @@ fun LoginScreen(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Text(
-                            text = "Mot de passe oublié ?",
+                            text = "Forgot your password?",
                             fontSize = 14.sp,
                             textDecoration = TextDecoration.Underline,
                             modifier = Modifier.clickable { navigateToForgotPassword() }
@@ -120,7 +121,7 @@ fun LoginScreen(
 
                 CustomButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Se connecter",
+                    text = "Sign in",
                     onClick = { viewModel.login(email.text, password.text) }
                 )
             }

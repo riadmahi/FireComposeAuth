@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CustomSnackBar(snackbarData: SnackbarData) {
     val isError = snackbarData.visuals.message.contains("error", ignoreCase = true)
-    val backgroundColor = if (isError) Color(0xFFFD0D0D) else Color(0xFFEAE5D8)
+    val backgroundColor = if (isError) Color(0xFFFD0D0D) else Color(0xFFF1E2F3)
 
     Snackbar(
         modifier = Modifier
