@@ -2,6 +2,10 @@ package com.riadmahi.firecomposeauth
 
 import cocoapods.FirebaseAuth.FIRAuth
 import cocoapods.FirebaseAuth.FIRAuthDataResult
+import cocoapods.FirebaseAuth.FIREmailAuthProvider
+import cocoapods.FirebaseAuth.FIREmailAuthProviderID
+import cocoapods.FirebaseAuth.FIRGoogleAuthProvider
+import cocoapods.FirebaseAuth.FIROAuthProvider
 import cocoapods.FirebaseCore.FIRApp
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCObjectVar
@@ -82,6 +86,85 @@ class IOSFirebaseAuth : FireComposeAuth {
         }
     }
 
+    override suspend fun refreshUser(): AuthUser? =
+        suspendCancellableCoroutine { cont ->
+            val user = auth.currentUser()
+            if (user == null) {
+                cont.resume(null)
+                return@suspendCancellableCoroutine
+            }
+
+            user.reloadWithCompletion { error ->
+                if (error != null) {
+                    cont.resume(null)
+                } else {
+                    cont.resume(AuthUser(user.uid(), user.email()))
+                }
+            }
+        }
+
+    override suspend fun sendEmailVerification(): AuthResult  =
+        suspendCancellableCoroutine { cont ->
+            val user = auth.currentUser()
+            if (user == null) {
+                cont.resume(AuthResult.Error(errorCode = FirebaseAuthErrorCodes.ERROR_USER_NOT_FOUND))
+                return@suspendCancellableCoroutine
+            }
+
+            user.sendEmailVerificationWithCompletion { error ->
+                if (error != null) {
+                    cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt().mapNSErrorCodeToFirebaseErrorCode()))
+                } else {
+                    cont.resume(AuthResult.Success)
+                }
+            }
+        }
+
+    override suspend fun reauthenticate(email: String, password: String): AuthResult =
+        suspendCancellableCoroutine { cont ->
+            val user = auth.currentUser()
+            if (user == null) {
+                cont.resume(AuthResult.Error(FirebaseAuthErrorCodes.ERROR_USER_NOT_FOUND))
+                return@suspendCancellableCoroutine
+            }
+            val credential = FIREmailAuthProvider.credentialWithEmail(email = email, password = password)
+            user.reauthenticateWithCredential(credential) { result, error ->
+                if (error != null) {
+                    cont.resume(AuthResult.Error(
+                        errorCode = error.code.toInt().mapNSErrorCodeToFirebaseErrorCode(),
+                        message = error.localizedDescription
+                    ))
+                } else {
+                    cont.resume(AuthResult.Success)
+                }
+            }
+        }
+
+    override suspend fun deleteAccount(): AuthResult =
+        suspendCancellableCoroutine { cont ->
+            val user = auth.currentUser()
+            if (user == null) {
+                cont.resume(AuthResult.Error(FirebaseAuthErrorCodes.ERROR_USER_NOT_FOUND))
+                return@suspendCancellableCoroutine
+            }
+
+            user.deleteWithCompletion { error ->
+                if (error != null) {
+                    cont.resume(AuthResult.Error(
+                        errorCode = error.code.toInt().mapNSErrorCodeToFirebaseErrorCode(),
+                        message = error.localizedDescription
+                    ))
+                } else {
+                    cont.resume(AuthResult.Success)
+                }
+            }
+        }
+
+    override fun isEmailVerified(): Boolean {
+        val user = auth.currentUser()
+        return user?.isEmailVerified() ?: false
+    }
+
     override fun currentUser(): AuthUser? {
         val user = auth.currentUser()
         return user?.let { AuthUser(it.uid(), it.email()) }
@@ -97,6 +180,40 @@ class IOSFirebaseAuth : FireComposeAuth {
                             error.code.toInt().mapNSErrorCodeToFirebaseErrorCode()
                         )
                     )
+                } else {
+                    cont.resume(AuthResult.Success)
+                }
+            }
+        }
+
+    override suspend fun signInWithGoogle(idToken: String): AuthResult =
+        suspendCancellableCoroutine { cont ->
+            val credential = FIRGoogleAuthProvider.credentialWithIDToken(idToken, accessToken = "")
+            auth.signInWithCredential(credential) { _, error ->
+                if (error != null) {
+                    cont.resume(AuthResult.Error(
+                        errorCode = error.code.toInt().mapNSErrorCodeToFirebaseErrorCode(),
+                        message = error.localizedDescription
+                    ))
+                } else {
+                    cont.resume(AuthResult.Success)
+                }
+            }
+        }
+
+    override suspend fun signInWithApple(idToken: String): AuthResult =
+        suspendCancellableCoroutine { cont ->
+            val credential = FIROAuthProvider.appleCredentialWithIDToken(
+                idToken = idToken,
+                rawNonce = null,
+                fullName = null
+            )
+            auth.signInWithCredential(credential) { _, error ->
+                if (error != null) {
+                    cont.resume(AuthResult.Error(
+                        errorCode = error.code.toInt().mapNSErrorCodeToFirebaseErrorCode(),
+                        message = error.localizedDescription
+                    ))
                 } else {
                     cont.resume(AuthResult.Success)
                 }
