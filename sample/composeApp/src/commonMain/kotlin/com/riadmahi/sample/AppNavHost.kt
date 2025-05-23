@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.riadmahi.firecomposeauth.FireComposeAuth
+import com.riadmahi.sample.forgotpassword.ForgotPasswordScreen
+import com.riadmahi.sample.forgotpassword.ForgotPasswordViewModel
 import com.riadmahi.sample.login.LoginScreen
 import com.riadmahi.sample.login.LoginViewModel
 
@@ -33,6 +35,16 @@ fun AppNavHost(
                     navController.navigate(AppDestination.Home.route) {
                         launchSingleTop = true
                     }
+                }
+            )
+        }
+
+        composable(route = AppDestination.ForgotPassword.route) {
+            val viewModel = remember { ForgotPasswordViewModel(auth) }
+            ForgotPasswordScreen(
+                viewModel = viewModel,
+                navigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
