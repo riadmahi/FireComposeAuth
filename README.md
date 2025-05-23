@@ -56,44 +56,76 @@ implementation(project(":firecomposeauth"))
    - Enable **"Copy if needed"**
    - Ensure it's added to the correct **Build Target**
 
-3. No extra code is needed — Firebase will auto-detect the config when calling:
-   ```swift
-   FIRApp.configure()
-   ```
-
----
+3. Manually add Firebase SDKs via Swift Package Manager:
+   - Open your Xcode project
+   - Go to **File > Add Packages**
+   - Use the URL: `https://github.com/firebase/firebase-ios-sdk`
+   - Select `FirebaseAuth` and `FirebaseCore` packages---
 
 ## Usage
 
-### Initialization (call once in your app)
+### 🔐 Available Authentication Methods
 
-```kotlin
-fireComposeAuth.initialize(context) // Android requires context, iOS can pass null
-```
+| Method                                   | Description                            | Sample Usage                                                   |
+|------------------------------------------|----------------------------------------|----------------------------------------------------------------|
+| `login(email, password)`                 | Sign in with email/password            | `fireComposeAuth.login("test@example.com", "secret")`          |
+| `register(email, password)`              | Register a new user                    | `fireComposeAuth.register("test@example.com", "secret")`       |
+| `sendPasswordResetEmail(email)`          | Send a password reset email            | `fireComposeAuth.sendPasswordResetEmail("test@example.com")`   |
+| `deleteAccount()`                        | Delete current logged-in user          | `fireComposeAuth.deleteAccount()`                              |
+| `reauthenticate(email, password)`        | Re-authenticate current user           | `fireComposeAuth.reauthenticate("test@example.com", "secret")` |
+| `signInWithGoogle(idToken, accessToken)` | Sign in with Google                    | `fireComposeAuth.signInWithGoogle(idToken, accessToken)`       |
+| `signInWithApple(idToken)`               | Sign in with Apple                     | `fireComposeAuth.signInWithApple(idToken)`                     |
+| `logout()`                               | Sign out user                          | `fireComposeAuth.logout()`                                     |
+| `currentUser()`                          | Returns current user info if logged in | `fireComposeAuth.currentUser()`                                |
 
-### Login
+---
 
-```kotlin
-val result = fireComposeAuth.login(email = "test@example.com", password = "secret")
-```
+### ⚙️ Token Retrieval (Native Setup Required)
 
-### Register
+#### Android (Google Sign-In)
 
-```kotlin
-val result = fireComposeAuth.register(email = "test@example.com", password = "secret")
-```
+1. Add dependency to your `build.gradle`:
+   ```kotlin
+   implementation("com.google.android.gms:play-services-auth:20.7.0")
+   ```
 
-### Logout
+2. Setup GoogleSignIn:
+   ```kotlin
+   val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+       .requestIdToken("your-client-id-from-firebase")
+       .requestEmail()
+       .build()
+   val client = GoogleSignIn.getClient(this, gso)
+   ```
 
-```kotlin
-fireComposeAuth.logout()
-```
+3. Launch and retrieve tokens:
+   ```kotlin
+   val account = GoogleSignIn.getSignedInAccountFromIntent(data).result
+   val idToken = account.idToken
+   val accessToken = account.serverAuthCode // exchange if needed
+   ```
 
-### Current User
+#### iOS (Apple Sign-In)
 
-```kotlin
-val user = fireComposeAuth.currentUser()
-```
+1. Use `ASAuthorizationAppleIDProvider`:
+   ```swift
+   let provider = ASAuthorizationAppleIDProvider()
+   let request = provider.createRequest()
+   request.requestedScopes = [.email]
+
+   let controller = ASAuthorizationController(authorizationRequests: [request])
+   controller.delegate = ...
+   controller.presentationContextProvider = ...
+   controller.performRequests()
+   ```
+
+2. Retrieve idToken:
+   ```swift
+   let credential = authorization.credential as? ASAuthorizationAppleIDCredential
+   let idToken = String(data: credential?.identityToken ?? Data(), encoding: .utf8)
+   ```
+
+Then pass these tokens to your shared KMP auth module.
 
 ---
 
