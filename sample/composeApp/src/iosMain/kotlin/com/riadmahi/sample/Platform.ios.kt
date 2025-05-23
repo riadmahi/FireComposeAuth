@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 
 
 @Composable
-expect fun getPlatformContext(): Any?
+actual fun getPlatformContext(): Any? = null
