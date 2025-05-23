@@ -21,7 +21,7 @@ class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
             auth.signInWithEmailAndPassword(email, password).await()
             AuthResult.Success
         } catch (e: FirebaseAuthException) {
-            AuthResult.Error(e.message, e.errorCode.toInt())
+            AuthResult.Error(e.message, e.errorCode)
         } catch (e: Exception) {
             AuthResult.Error(e.message)
         }
@@ -32,7 +32,7 @@ class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
             auth.createUserWithEmailAndPassword(email, password).await()
             AuthResult.Success
         } catch (e: FirebaseAuthException) {
-            AuthResult.Error(e.message, e.errorCode.toInt())
+            AuthResult.Error(e.message, e.errorCode)
         }
         catch (e: Exception) {
             AuthResult.Error(e.message)
@@ -53,7 +53,7 @@ class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
             auth.sendPasswordResetEmail(email).await()
             AuthResult.Success
         } catch (e: FirebaseAuthException) {
-            AuthResult.Error(e.message, e.errorCode.toInt())
+            AuthResult.Error(e.message, e.errorCode)
         } catch (e: Exception) {
             AuthResult.Error(e.message)
         }

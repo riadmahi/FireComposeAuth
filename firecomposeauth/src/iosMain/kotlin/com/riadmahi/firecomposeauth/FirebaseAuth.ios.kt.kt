@@ -30,7 +30,12 @@ class IOSFirebaseAuth : FireComposeAuth {
                     password = password,
                     completion = { _: FIRAuthDataResult?, error: NSError? ->
                         if (error != null) {
-                            cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt()))
+                            cont.resume(
+                                AuthResult.Error(
+                                    error.localizedDescription,
+                                    error.code.toInt().mapNSErrorCodeToFirebaseErrorCode()
+                                )
+                            )
                         } else {
                             cont.resume(
                                 AuthResult.Success
@@ -47,7 +52,12 @@ class IOSFirebaseAuth : FireComposeAuth {
             try {
                 auth.createUserWithEmail(email, password) { result, error ->
                     if (error != null) {
-                        cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt()))
+                        cont.resume(
+                            AuthResult.Error(
+                                error.localizedDescription,
+                                error.code.toInt().mapNSErrorCodeToFirebaseErrorCode()
+                            )
+                        )
                     } else {
                         cont.resume(AuthResult.Success)
                     }
@@ -67,8 +77,7 @@ class IOSFirebaseAuth : FireComposeAuth {
                     AuthResult.Error(error?.localizedDescription)
                 }
             }
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
             AuthResult.Error(e.message)
         }
     }
@@ -82,12 +91,29 @@ class IOSFirebaseAuth : FireComposeAuth {
         suspendCancellableCoroutine { cont ->
             auth.sendPasswordResetWithEmail(email) { error ->
                 if (error != null) {
-                    cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt()))
+                    cont.resume(
+                        AuthResult.Error(
+                            error.localizedDescription,
+                            error.code.toInt().mapNSErrorCodeToFirebaseErrorCode()
+                        )
+                    )
                 } else {
                     cont.resume(AuthResult.Success)
                 }
             }
         }
+}
+
+fun Int?.mapNSErrorCodeToFirebaseErrorCode(): String {
+    return when (this) {
+        17008 -> FirebaseAuthErrorCodes.ERROR_INVALID_EMAIL
+        17009 -> FirebaseAuthErrorCodes.ERROR_WRONG_PASSWORD
+        17011 -> FirebaseAuthErrorCodes.ERROR_USER_NOT_FOUND
+        17010 -> FirebaseAuthErrorCodes.ERROR_TOO_MANY_REQUESTS
+        17007 -> FirebaseAuthErrorCodes.ERROR_EMAIL_ALREADY_IN_USE
+        17026 -> FirebaseAuthErrorCodes.ERROR_WEAK_PASSWORD
+        else -> FirebaseAuthErrorCodes.UNKNOWN
+    }
 }
 
 actual fun getFireComposeAuth(context: Any?): FireComposeAuth = IOSFirebaseAuth()
