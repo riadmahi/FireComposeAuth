@@ -1,3 +1,5 @@
+![FireComposeAuth Banner](docs/img/banner.png)
+
 ## Getting Started with FireComposeAuth
 
 FireComposeAuth is a Kotlin Multiplatform library that simplifies Firebase Authentication integration for Android and iOS using Compose Multiplatform.
