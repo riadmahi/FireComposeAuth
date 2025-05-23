@@ -13,6 +13,7 @@ interface FireComposeAuth {
     fun currentUser(): AuthUser?
     suspend fun signInWithGoogle(idToken: String): AuthResult
     suspend fun signInWithApple(idToken: String): AuthResult
+    suspend fun updatePassword(newPassword: String): AuthResult
 }
 
 expect fun getFireComposeAuth(context: Any? = null): FireComposeAuth

@@ -132,6 +132,15 @@ class AndroidFirebaseAuth(context: Any?): FireComposeAuth {
             AuthResult.Error(FirebaseAuthErrorCodes.UNKNOWN)
         }
     }
+
+    override suspend fun updatePassword(newPassword: String): AuthResult {
+        return try {
+            auth.currentUser?.updatePassword(newPassword)?.await()
+            AuthResult.Success
+        } catch (e: Exception) {
+            AuthResult.Error(e.message, (e as? FirebaseAuthException)?.errorCode)
+        }
+    }
 }
 
 actual fun getFireComposeAuth(context: Any?): FireComposeAuth = AndroidFirebaseAuth(context)

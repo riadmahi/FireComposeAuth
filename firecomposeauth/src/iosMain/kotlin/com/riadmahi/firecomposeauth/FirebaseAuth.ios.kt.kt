@@ -219,6 +219,18 @@ class IOSFirebaseAuth : FireComposeAuth {
                 }
             }
         }
+
+    override suspend fun updatePassword(newPassword: String): AuthResult =
+        suspendCancellableCoroutine { cont ->
+            val user = auth.currentUser()
+            user?.updatePassword(newPassword) { error ->
+                if (error != null) {
+                    cont.resume(AuthResult.Error(error.localizedDescription, error.code.toInt().mapNSErrorCodeToFirebaseErrorCode()))
+                } else {
+                    cont.resume(AuthResult.Success)
+                }
+            }
+        }
 }
 
 fun Int?.mapNSErrorCodeToFirebaseErrorCode(): String {
