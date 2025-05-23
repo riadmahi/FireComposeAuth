@@ -1,11 +1,11 @@
 package com.riadmahi.sample.login
 
 import CustomButton
+import CustomGhostButton
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -32,7 +32,8 @@ import com.riadmahi.sample.component.PasswordTextField
 fun LoginScreen(
     viewModel: LoginViewModel,
     navigateToForgotPassword: () -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    navigateToSignUp: () -> Unit
 ) {
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
@@ -61,7 +62,7 @@ fun LoginScreen(
                 CustomSnackBar(snackbarData)
             }
         }
-    ) { paddingValues ->
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -119,11 +120,21 @@ fun LoginScreen(
                     }
                 }
 
-                CustomButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Sign in",
-                    onClick = { viewModel.login(email.text, password.text) }
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    CustomButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Sign in",
+                        onClick = { viewModel.login(email.text, password.text) }
+                    )
+
+                    CustomGhostButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Sign up",
+                        onClick = { navigateToSignUp() }
+                    )
+                }
             }
 
             if (uiState is LoginUiState.Loading) {
