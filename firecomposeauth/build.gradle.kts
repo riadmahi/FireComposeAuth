@@ -1,3 +1,4 @@
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.cocoapods)
+    alias(libs.plugins.vanniktech.maven.publish)
 }
 
 kotlin {
@@ -93,4 +95,41 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+
+    coordinates("com.riadmahi", "firecomposeauth")
+
+    pom {
+        name.set("FireComposeAuth")
+        description.set("Compose Multiplatform library for Firebase Authentication integration")
+        inceptionYear.set("2024")
+        url.set("https://github.com/riadmahi/FireComposeAuth")
+
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
+                distribution.set("repo")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("riadmahi")
+                name.set("Riad Mahi")
+                email.set("contact@riadmahi.com")
+                url.set("https://github.com/riadmahi")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/riadmahi/FireComposeAuth")
+            connection.set("scm:git:git://github.com/riadmahi/FireComposeAuth.git")
+            developerConnection.set("scm:git:ssh://git@github.com/riadmahi/FireComposeAuth.git")
+        }
+    }
 }
